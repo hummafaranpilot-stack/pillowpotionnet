@@ -1,0 +1,26 @@
+# Admin pages show live, frequently-changing data — never let LiteSpeed/Apache cache them.
+<FilesMatch "^(admin|redirects-api|login)\.php$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0, private"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </IfModule>
+  <IfModule LiteSpeed>
+    CacheDisable public /admin.php
+    CacheDisable public /redirects-api.php
+  </IfModule>
+</FilesMatch>
+
+RewriteEngine On
+
+# Clean /admin URL -> admin.php (must come before the generic slug rule below).
+# RewriteCond only binds to the RewriteRule immediately after it, so it's
+# repeated for each rule below rather than shared.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin$ admin.php [L]
+
+# Any single path segment like /rp or /prime-trt routes to index.php?src=<slug>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?src=$1 [L,QSA]

@@ -1,0 +1,6 @@
+# Runtime data — not code
+data/clicks-log.json
+data/geo-cache.json
+
+# Archives — not part of source
+*.zip
