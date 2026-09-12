@@ -65,6 +65,7 @@ $params = [
     'sub2' => $adset_id,
     'sub3' => $ad_id,
     'sub4' => 'utm_source_pillowpotion',
+    'sub5' => $click_id,
 ];
 
 $destination = 'https://rushpermit.com/secure/app-carry10/?' . http_build_query($params);
