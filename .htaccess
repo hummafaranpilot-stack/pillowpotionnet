@@ -1,5 +1,5 @@
-# Admin pages show live, frequently-changing data — never let LiteSpeed/Apache cache them.
-<FilesMatch "^(admin|redirects-api|login)\.php$">
+# Admin/analytics pages show live, frequently-changing data — never let LiteSpeed/Apache cache them.
+<FilesMatch "^(admin|redirects-api|login|analytics|analytics-login)\.php$">
   <IfModule mod_headers.c>
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0, private"
     Header set Pragma "no-cache"
@@ -8,6 +8,7 @@
   <IfModule LiteSpeed>
     CacheDisable public /admin.php
     CacheDisable public /redirects-api.php
+    CacheDisable public /analytics.php
   </IfModule>
 </FilesMatch>
 
@@ -25,6 +26,17 @@ RewriteRule ^admin$ admin.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^rp$ rp.php [L,QSA]
+
+# Clean URLs for the analytics dashboard (must also precede the generic slug rule below).
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^analytics$ analytics.php [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^analytics-login$ analytics-login.php [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^analytics-logout$ analytics-logout.php [L,QSA]
 
 # Any single path segment like /rp or /prime-trt routes to index.php?src=<slug>
 RewriteCond %{REQUEST_FILENAME} !-f

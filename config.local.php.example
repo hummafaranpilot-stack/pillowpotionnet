@@ -6,3 +6,6 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', '');
 define('DB_USER', '');
 define('DB_PASS', '');
+
+// Shared password for the /analytics dashboard login.
+define('ANALYTICS_PASSWORD', '');
