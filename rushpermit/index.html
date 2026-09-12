@@ -1415,17 +1415,53 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
     <script>
       // Preserve every query param this page was loaded with (fbclid, sub-ids, etc.)
-      // and carry it through, as-is, onto every CTA link's destination URL.
+      // and carry it through, as-is, onto every CTA link's destination URL. click_id
+      // is always overwritten with the server-tracked id once track-prelander.php
+      // responds; until then, links get a client-side placeholder so they're never
+      // missing a click_id even if the visitor clicks before the fetch() returns.
       (function () {
         var DEST = 'https://rushpermit.com/secure/app-carry10/?click_id=&affid=275&oid=185&fn=&ln=&em=&ph=&creative_id=17';
-        var destUrl = new URL(DEST);
         var incoming = new URLSearchParams(window.location.search);
-        incoming.forEach(function (v, k) { destUrl.searchParams.set(k, v); });
-        var finalHref = destUrl.toString();
-        document.querySelectorAll('.redirect_to').forEach(function (el) {
-          el.setAttribute('href', finalHref);
-          el.setAttribute('data-external-link', finalHref);
-        });
+
+        function applyClickId(clickId) {
+          var destUrl = new URL(DEST);
+          incoming.forEach(function (v, k) { destUrl.searchParams.set(k, v); });
+          destUrl.searchParams.set('click_id', clickId);
+          var finalHref = destUrl.toString();
+          document.querySelectorAll('.redirect_to').forEach(function (el) {
+            el.setAttribute('href', finalHref);
+            el.setAttribute('data-external-link', finalHref);
+          });
+        }
+
+        var fbclid = incoming.get('fbclid') || '';
+        var fallbackClickId = fbclid !== '' ? fbclid : (
+          window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)
+        );
+
+        // Set links immediately so a click before the fetch() resolves still carries a click_id.
+        applyClickId(fallbackClickId);
+
+        fetch('/track-prelander.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fbclid: fbclid,
+            campaign_id: incoming.get('sub1') || '',
+            adset_id: incoming.get('sub2') || '',
+            ad_id: incoming.get('sub3') || '',
+            referrer: document.referrer || '',
+          }),
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.click_id) {
+              applyClickId(data.click_id);
+            }
+          })
+          .catch(function () {
+            // Links already carry the fallback click_id — nothing more to do.
+          });
       })();
     </script>
   </body>
