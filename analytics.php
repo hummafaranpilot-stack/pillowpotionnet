@@ -81,6 +81,14 @@ function status_class($status) {
         default: return 'status-pending';
     }
 }
+
+/** Renders a long id shortened to $len chars + "…", with the full value in a hover tooltip. */
+function short_id($value, $len = 14) {
+    $value = (string)($value ?? '');
+    if ($value === '') return '—';
+    $display = strlen($value) > $len ? substr($value, 0, $len) . '…' : $value;
+    return '<span title="' . h($value) . '">' . h($display) . '</span>';
+}
 ?>
 <!doctype html>
 <html>
@@ -138,6 +146,9 @@ function status_class($status) {
   }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #161f34; }
+  td:nth-child(1) span[title], td:nth-child(2) span[title] {
+    cursor: help; border-bottom: 1px dotted #3a4762;
+  }
 
   .status-pill {
     display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
@@ -220,8 +231,8 @@ function status_class($status) {
       <tbody>
         <?php foreach ($rows as $row): ?>
         <tr>
-          <td><?= h($row['click_id']) ?></td>
-          <td><?= h($row['fbclid']) ?: '—' ?></td>
+          <td><?= short_id($row['click_id']) ?></td>
+          <td><?= short_id($row['fbclid']) ?></td>
           <td><?= h($row['campaign_id']) ?: '—' ?></td>
           <td><?= h($row['adset_id']) ?: '—' ?></td>
           <td><?= h($row['ad_id']) ?: '—' ?></td>
