@@ -1,0 +1,45 @@
+SETUP: DATABASE CREDENTIALS + SCHEMA ON HOSTINGER
+===================================================
+
+STEP 1 — Upload config.local.php to the server (one-time, NOT via git)
+------------------------------------------------------------------------
+config.local.php holds the real DB password and is deliberately excluded
+from git (see .gitignore), so it will NOT be pulled in by auto-deploy.
+You must place it on the server yourself, once:
+
+1. In hPanel, open File Manager (or connect via SFTP).
+2. Go to the folder where this site's files are deployed (e.g. public_html).
+3. Create a new file named exactly:  config.local.php
+4. Paste this content (already filled in with your real credentials):
+
+    <?php
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'u373133718_ppnet');
+    define('DB_USER', 'u373133718_contact');
+    define('DB_PASS', 'Nester547$$$');
+
+5. Save it in the SAME directory as config.php (the project root).
+
+(config.local.php.example in the repo shows the same template with blank
+values, in case you need to recreate this file later.)
+
+STEP 2 — Run schema.sql in phpMyAdmin
+------------------------------------------------------------------------
+1. Log in to Hostinger hPanel.
+2. Go to: Databases > phpMyAdmin.
+3. In the left sidebar of phpMyAdmin, click the database named:
+       u373133718_ppnet
+4. Click the "SQL" tab at the top of the page.
+5. Open schema.sql in a text editor, copy its entire contents, and paste
+   them into the SQL box in phpMyAdmin.
+6. Click "Go" to execute. This creates the `clicks` table used by rp.php.
+7. Confirm it worked: click the "clicks" table in the left sidebar (or
+   run `DESCRIBE clicks;` in the SQL tab) and check the columns match
+   schema.sql.
+
+Notes:
+- schema.sql uses `CREATE TABLE IF NOT EXISTS`, so re-running it later is
+  safe and won't wipe existing data.
+- If config.local.php is missing on the server, every /rp request will
+  fail to connect to the DB (logged to logs/errors.log) but will still
+  redirect the visitor — see rp.php's error handling.

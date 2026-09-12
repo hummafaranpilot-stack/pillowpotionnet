@@ -20,6 +20,12 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^admin$ admin.php [L]
 
+# Clean /rp URL -> rp.php (tracking redirect endpoint; must also precede the
+# generic slug rule below, same reason as /admin above).
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^rp$ rp.php [L,QSA]
+
 # Any single path segment like /rp or /prime-trt routes to index.php?src=<slug>
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

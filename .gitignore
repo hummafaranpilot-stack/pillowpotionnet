@@ -1,6 +1,10 @@
 # Runtime data — not code
 data/clicks-log.json
 data/geo-cache.json
+logs/*.log
+
+# Real DB credentials — never commit, upload directly to the server instead
+config.local.php
 
 # Archives — not part of source
 *.zip

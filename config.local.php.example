@@ -1,0 +1,8 @@
+<?php
+// Copy this file to config.local.php and fill in the real values.
+// config.local.php itself is gitignored and must never be committed.
+
+define('DB_HOST', 'localhost');
+define('DB_NAME', '');
+define('DB_USER', '');
+define('DB_PASS', '');
