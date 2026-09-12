@@ -261,5 +261,29 @@ function short_id($value, $len = 14) {
   </div>
   <?php endif; ?>
 </div>
+<script>
+  // Client-side truncation for Click ID / FBCLID, in case the page is ever served
+  // from a cache that predates the server-side short_id() truncation — same
+  // behavior (14-char prefix + "…", full value on hover) applied in the browser.
+  (function () {
+    var MAX_LEN = 14;
+    document.querySelectorAll('table tbody tr').forEach(function (row) {
+      [0, 1].forEach(function (colIndex) {
+        var cell = row.children[colIndex];
+        if (!cell) return;
+        var full = cell.textContent.trim();
+        if (!full || full === '—' || full.indexOf('…') !== -1 || cell.querySelector('span[title]')) return;
+        if (full.length <= MAX_LEN) return;
+        var span = document.createElement('span');
+        span.title = full;
+        span.textContent = full.slice(0, MAX_LEN) + '…';
+        span.style.cursor = 'help';
+        span.style.borderBottom = '1px dotted #3a4762';
+        cell.textContent = '';
+        cell.appendChild(span);
+      });
+    });
+  })();
+</script>
 </body>
 </html>
