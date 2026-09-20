@@ -3,3 +3,16 @@
 /* local prelander: let the page fill the viewport on wide screens
    (the outer shell was capped at 2000px, leaving white bands at the sides) */
 .tw-max-w-\[2000px\]{max-width:100%}
+
+
+/* local prelander: the responsive container-padding utilities ship without their
+   media queries in this mirror, so the last declaration always won and the page
+   gutters never applied at any width. Re-scope each to the breakpoint it is
+   named for, smallest first so larger ones override. */
+.tw-px-container,
+.md\:tw-px-container-md,
+.lg\:tw-px-container-lg,
+.xl\:tw-px-container-xl{padding-left:16px;padding-right:16px}
+@media (min-width:768px){.md\:tw-px-container-md,.lg\:tw-px-container-lg,.xl\:tw-px-container-xl{padding-left:24px;padding-right:24px}}
+@media (min-width:1023px){.lg\:tw-px-container-lg,.xl\:tw-px-container-xl{padding-left:40px;padding-right:40px}}
+@media (min-width:1400px){.xl\:tw-px-container-xl{padding-left:130px;padding-right:130px}}
