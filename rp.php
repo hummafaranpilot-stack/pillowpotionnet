@@ -1,8 +1,20 @@
 <?php
-// Tracking redirect: logs the click (best-effort) then 302s the visitor onward.
+// Tracking redirect: logs the click (best-effort) then 302s the visitor onward to
+// whichever offer's ?offer= key was requested (see offers.php for the registry).
 // No HTML output — only header() redirects, so this stays fast even under load.
 
 require_once __DIR__ . '/config.php';
+
+$offers = require __DIR__ . '/offers.php';
+
+// --- Which offer to redirect to (defaults to rushpermit for old links with no ?offer=) ---
+$offer_key = trim($_GET['offer'] ?? 'rushpermit');
+if (!isset($offers[$offer_key])) {
+    log_error("Unknown offer requested: $offer_key");
+    http_response_code(404);
+    exit('Unknown offer');
+}
+$offer = $offers[$offer_key];
 
 // --- Read + sanitize query params (all treated as plain strings, never used in raw SQL) ---
 $fbclid = trim($_GET['fbclid'] ?? '');
@@ -50,25 +62,20 @@ if ($db !== null) {
     }
 }
 
-// --- Build the destination URL and redirect ---
-$params = [
-    'affid' => '275',
-    'oid' => '185',
-    'fn' => '',
-    'ln' => '',
-    'em' => '',
-    'ph' => '',
-    'creative_id' => '17',
-    'click_id' => $click_id,
-    'fbclid' => $fbclid,
-    'sub1' => $campaign_id,
-    'sub2' => $adset_id,
-    'sub3' => $ad_id,
-    'sub4' => 'utm_source_pillowpotion',
-    'sub5' => $click_id,
+// --- Build the destination URL from the offer's param template and redirect ---
+$replacements = [
+    '{click_id}' => $click_id,
+    '{fbclid}' => $fbclid,
+    '{sub1}' => $campaign_id,
+    '{sub2}' => $adset_id,
+    '{sub3}' => $ad_id,
 ];
+$params = [];
+foreach ($offer['params'] as $key => $value) {
+    $params[$key] = strtr($value, $replacements);
+}
 
-$destination = 'https://rushpermit.com/secure/app-carry10/?' . http_build_query($params);
+$destination = $offer['base_url'] . '?' . http_build_query($params);
 
 header('Location: ' . $destination, true, 302);
 exit;
