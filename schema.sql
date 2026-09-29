@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS clicks (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     click_id VARCHAR(255) NOT NULL,
+    offer VARCHAR(50) NULL,
     fbclid VARCHAR(255) NULL,
     campaign_id VARCHAR(100) NULL,
     adset_id VARCHAR(100) NULL,
@@ -18,3 +19,16 @@ CREATE TABLE IF NOT EXISTS clicks (
     PRIMARY KEY (id),
     UNIQUE KEY uq_click_id (click_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Adds the offer column to a clicks table created before this column existed.
+-- Safe to run again: it no-ops if the column is already there.
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'clicks' AND COLUMN_NAME = 'offer'
+);
+SET @sql = IF(@col_exists = 0,
+    'ALTER TABLE clicks ADD COLUMN offer VARCHAR(50) NULL AFTER click_id',
+    'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

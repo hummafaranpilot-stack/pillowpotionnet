@@ -50,7 +50,7 @@ if ($db !== null) {
 
         // Page of rows, newest first.
         $stmt = $db->prepare(
-            "SELECT click_id, fbclid, campaign_id, adset_id, ad_id, ip_address, status, payout, created_at, converted_at
+            "SELECT click_id, offer, fbclid, campaign_id, adset_id, ad_id, ip_address, status, payout, created_at, converted_at
              FROM clicks
              WHERE $where_clause
              ORDER BY created_at DESC
@@ -146,7 +146,7 @@ function short_id($value, $len = 14) {
   }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #161f34; }
-  td:nth-child(1) span[title], td:nth-child(2) span[title] {
+  td:nth-child(1) span[title], td:nth-child(3) span[title] {
     cursor: help; border-bottom: 1px dotted #3a4762;
   }
 
@@ -217,6 +217,7 @@ function short_id($value, $len = 14) {
       <thead>
         <tr>
           <th>Click ID</th>
+          <th>Offer</th>
           <th>FBCLID</th>
           <th>Campaign ID</th>
           <th>Adset ID</th>
@@ -232,6 +233,7 @@ function short_id($value, $len = 14) {
         <?php foreach ($rows as $row): ?>
         <tr>
           <td><?= short_id($row['click_id']) ?></td>
+          <td><?= h($row['offer']) ?: '—' ?></td>
           <td><?= short_id($row['fbclid']) ?></td>
           <td><?= h($row['campaign_id']) ?: '—' ?></td>
           <td><?= h($row['adset_id']) ?: '—' ?></td>
@@ -268,7 +270,7 @@ function short_id($value, $len = 14) {
   (function () {
     var MAX_LEN = 14;
     document.querySelectorAll('table tbody tr').forEach(function (row) {
-      [0, 1].forEach(function (colIndex) {
+      [0, 2].forEach(function (colIndex) {
         var cell = row.children[colIndex];
         if (!cell) return;
         var full = cell.textContent.trim();

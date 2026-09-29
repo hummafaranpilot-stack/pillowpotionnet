@@ -42,12 +42,13 @@ if ($db !== null) {
         // ON DUPLICATE KEY UPDATE so a repeat click with the same fbclid doesn't
         // throw a duplicate-key error — it just no-ops (touches created_at) instead.
         $stmt = $db->prepare(
-            'INSERT INTO clicks (click_id, fbclid, campaign_id, adset_id, ad_id, ip_address, user_agent, referrer)
-             VALUES (:click_id, :fbclid, :campaign_id, :adset_id, :ad_id, :ip_address, :user_agent, :referrer)
+            'INSERT INTO clicks (click_id, offer, fbclid, campaign_id, adset_id, ad_id, ip_address, user_agent, referrer)
+             VALUES (:click_id, :offer, :fbclid, :campaign_id, :adset_id, :ad_id, :ip_address, :user_agent, :referrer)
              ON DUPLICATE KEY UPDATE created_at = created_at'
         );
         $stmt->execute([
             ':click_id' => $click_id,
+            ':offer' => $offer_key,
             ':fbclid' => $fbclid !== '' ? $fbclid : null,
             ':campaign_id' => $campaign_id !== '' ? $campaign_id : null,
             ':adset_id' => $adset_id !== '' ? $adset_id : null,
