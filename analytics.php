@@ -50,7 +50,7 @@ if ($db !== null) {
 
         // Page of rows, newest first.
         $stmt = $db->prepare(
-            "SELECT click_id, offer, fbclid, campaign_id, adset_id, ad_id, ip_address, status, payout, created_at, converted_at
+            "SELECT click_id, offer, fbclid, campaign_id, adset_id, ad_id, ip_address, country, status, payout, created_at, converted_at
              FROM clicks
              WHERE $where_clause
              ORDER BY created_at DESC
@@ -223,6 +223,7 @@ function short_id($value, $len = 14) {
           <th>Adset ID</th>
           <th>Ad ID</th>
           <th>IP Address</th>
+          <th>Country</th>
           <th>Status</th>
           <th>Payout</th>
           <th>Click Time</th>
@@ -239,6 +240,7 @@ function short_id($value, $len = 14) {
           <td><?= h($row['adset_id']) ?: '—' ?></td>
           <td><?= h($row['ad_id']) ?: '—' ?></td>
           <td><?= h($row['ip_address']) ?></td>
+          <td><?= h($row['country']) ?: '—' ?></td>
           <td><span class="status-pill <?= status_class($row['status']) ?>"><?= h($row['status']) ?></span></td>
           <td>$<?= number_format((float)$row['payout'], 2) ?></td>
           <td><?= h($row['created_at']) ?></td>

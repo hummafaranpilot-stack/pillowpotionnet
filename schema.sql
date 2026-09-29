@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS clicks (
     adset_id VARCHAR(100) NULL,
     ad_id VARCHAR(100) NULL,
     ip_address VARCHAR(45) NOT NULL,
+    country VARCHAR(100) NULL,
     user_agent TEXT NOT NULL,
     referrer VARCHAR(500) NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
@@ -28,6 +29,19 @@ SET @col_exists = (
 );
 SET @sql = IF(@col_exists = 0,
     'ALTER TABLE clicks ADD COLUMN offer VARCHAR(50) NULL AFTER click_id',
+    'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- Adds the country column to a clicks table created before this column existed.
+-- Safe to run again: it no-ops if the column is already there.
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'clicks' AND COLUMN_NAME = 'country'
+);
+SET @sql = IF(@col_exists = 0,
+    'ALTER TABLE clicks ADD COLUMN country VARCHAR(100) NULL AFTER ip_address',
     'SELECT 1');
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
