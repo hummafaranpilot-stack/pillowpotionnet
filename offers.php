@@ -40,4 +40,15 @@ return [
             'sub5' => '{click_id}',
         ],
     ],
+
+    'sweetrestoreus' => [
+        'base_url' => 'https://nmttrack.com/',
+        'params' => [
+            'a' => '303202',
+            'c' => '435757',
+            'co' => '369322',
+            'mt' => '16',
+            's2' => '{click_id}',
+        ],
+    ],
 ];
