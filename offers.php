@@ -89,4 +89,18 @@ return [
             's2' => '{click_id}',
         ],
     ],
+
+    'hinukiorbioworld' => [
+        'base_url' => 'https://tryhinuki.com/hinuki/product',
+        'params' => [
+            'vndr' => 'evf',
+            'evf' => '1',
+            'uid' => '7425',
+            'offid' => '102',
+            'affiliate_id' => '4806',
+            'source_id' => 'facebook',
+            'subid1' => '{click_id}',
+            'fbclid' => '{click_id}',
+        ],
+    ],
 ];
