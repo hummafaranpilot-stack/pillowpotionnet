@@ -102,6 +102,18 @@ return [
         ],
     ],
 
+    'bladderbalance' => [
+        'base_url' => 'https://nmttrack.com/',
+        'params' => [
+            'a' => '303202',
+            'c' => '440554',
+            'co' => '369322',
+            'mt' => '16',
+            'fbclid' => '{click_id}',
+            's2' => '{click_id}',
+        ],
+    ],
+
     'hinukiorbioworld' => [
         'base_url' => 'https://tryhinuki.com/hinuki/product',
         'params' => [
