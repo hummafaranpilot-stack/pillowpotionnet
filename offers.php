@@ -99,7 +99,7 @@ return [
             'offid' => '102',
             'affiliate_id' => '4806',
             'source_id' => 'facebook',
-            'subid1' => '{click_id}',
+            'subid' => '{click_id}',
             'fbclid' => '{click_id}',
         ],
     ],
