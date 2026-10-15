@@ -127,4 +127,13 @@ return [
             'fbclid' => '{click_id}',
         ],
     ],
+
+    'bluespark' => [
+        'base_url' => 'https://buybluespark.com/products/blue-spark%E2%84%A2-hydrogen-water-bottle',
+        'params' => [
+            'aff_id' => 'saket',
+            'source' => '38653',
+            'clickid' => '{click_id}',
+        ],
+    ],
 ];
