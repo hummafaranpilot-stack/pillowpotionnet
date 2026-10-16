@@ -76,12 +76,25 @@ $country = $ip_address !== '' ? geo_country($ip_address) : null;
 $db = get_db_connection();
 if ($db !== null) {
     try {
-        // ON DUPLICATE KEY UPDATE so a repeat click with the same fbclid doesn't
-        // throw a duplicate-key error — it just no-ops (touches created_at) instead.
+        // ON DUPLICATE KEY UPDATE so a repeat click with the same click_id doesn't
+        // throw a duplicate-key error — it refreshes the tracking fields (offer,
+        // fbclid, sub ids, ip/geo/UA) in case this click_id was first seen under a
+        // different offer or with missing data, but never touches status/payout/
+        // converted_at — those belong only to postback.php, or a click here could
+        // silently wipe out a real conversion that already landed.
         $stmt = $db->prepare(
             'INSERT INTO clicks (click_id, offer, fbclid, campaign_id, adset_id, ad_id, ip_address, country, user_agent, referrer)
              VALUES (:click_id, :offer, :fbclid, :campaign_id, :adset_id, :ad_id, :ip_address, :country, :user_agent, :referrer)
-             ON DUPLICATE KEY UPDATE created_at = created_at'
+             ON DUPLICATE KEY UPDATE
+                offer = VALUES(offer),
+                fbclid = VALUES(fbclid),
+                campaign_id = VALUES(campaign_id),
+                adset_id = VALUES(adset_id),
+                ad_id = VALUES(ad_id),
+                ip_address = VALUES(ip_address),
+                country = VALUES(country),
+                user_agent = VALUES(user_agent),
+                referrer = VALUES(referrer)'
         );
         $stmt->execute([
             ':click_id' => $click_id,
