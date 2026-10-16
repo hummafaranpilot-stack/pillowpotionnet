@@ -17,6 +17,16 @@ $range_sql = [
 ];
 $where_clause = $range_sql[$range];
 
+// --- Offer filter (GET param, whitelisted against the registry in offers.php) ---
+$offer_keys = array_keys(require __DIR__ . '/offers.php');
+$offer_filter = $_GET['offer'] ?? '';
+if (!in_array($offer_filter, $offer_keys, true)) {
+    $offer_filter = '';
+}
+if ($offer_filter !== '') {
+    $where_clause .= ' AND offer = :offer_filter';
+}
+
 // --- Pagination ---
 $per_page = 100;
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -41,6 +51,9 @@ if ($db !== null) {
              FROM clicks
              WHERE $where_clause"
         );
+        if ($offer_filter !== '') {
+            $stmt->bindValue(':offer_filter', $offer_filter, PDO::PARAM_STR);
+        }
         $stmt->execute();
         $summary = $stmt->fetch();
         $total_clicks = (int)$summary['total_clicks'];
@@ -58,6 +71,9 @@ if ($db !== null) {
         );
         $stmt->bindValue(':limit', $per_page, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        if ($offer_filter !== '') {
+            $stmt->bindValue(':offer_filter', $offer_filter, PDO::PARAM_STR);
+        }
         $stmt->execute();
         $rows = $stmt->fetchAll();
     } catch (PDOException $e) {
@@ -186,6 +202,13 @@ function short_id($value, $len = 14) {
       <option value="30d" <?= $range === '30d' ? 'selected' : '' ?>>Last 30 days</option>
       <option value="all" <?= $range === 'all' ? 'selected' : '' ?>>All time</option>
     </select>
+    <label for="offer">Offer:</label>
+    <select id="offer" name="offer" onchange="this.form.submit()">
+      <option value="">All offers</option>
+      <?php foreach ($offer_keys as $key): ?>
+        <option value="<?= h($key) ?>" <?= $offer_filter === $key ? 'selected' : '' ?>><?= h($key) ?></option>
+      <?php endforeach; ?>
+    </select>
   </form>
 
   <div class="summary-grid">
@@ -255,7 +278,7 @@ function short_id($value, $len = 14) {
   <?php if (!$db_error && $total_pages > 1): ?>
   <div class="pagination">
     <?php
-      $qs = ['range' => $range];
+      $qs = ['range' => $range, 'offer' => $offer_filter];
       $prev_url = '?' . http_build_query($qs + ['page' => max(1, $page - 1)]);
       $next_url = '?' . http_build_query($qs + ['page' => min($total_pages, $page + 1)]);
     ?>
