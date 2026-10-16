@@ -136,4 +136,14 @@ return [
             'clickid' => '{click_id}',
         ],
     ],
+
+    'goldstandardvip' => [
+        'base_url' => 'https://apritvun.com/clickout/26087/360645/',
+        'params' => [
+            'traffic_source' => 'facebook',
+            'click_id' => '{click_id}',
+            'sub_id1' => '{sub1}',
+            'sub_id2' => '{sub2}',
+        ],
+    ],
 ];
