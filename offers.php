@@ -156,4 +156,14 @@ return [
             'sub_id2' => '{sub2}',
         ],
     ],
+
+    'balancebloomvip' => [
+        'base_url' => 'https://apritvun.com/clickout/26132/360644/',
+        'params' => [
+            'traffic_source' => 'facebook',
+            'click_id' => '{click_id}',
+            'sub_id1' => '{sub1}',
+            'sub_id2' => '{sub2}',
+        ],
+    ],
 ];
