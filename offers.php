@@ -146,4 +146,14 @@ return [
             'sub_id2' => '{sub2}',
         ],
     ],
+
+    'medibloomvip' => [
+        'base_url' => 'https://cvaispino.com/clickout/26190/360643/',
+        'params' => [
+            'traffic_source' => 'facebook',
+            'click_id' => '{click_id}',
+            'sub_id1' => '{sub1}',
+            'sub_id2' => '{sub2}',
+        ],
+    ],
 ];
