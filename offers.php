@@ -128,6 +128,20 @@ return [
         ],
     ],
 
+    'kinzenov2orbioworld' => [
+        'base_url' => 'https://get-kinzeno.com/kinzeno-massage-roller/order',
+        'params' => [
+            'vndr' => 'evf',
+            'evf' => '1',
+            'uid' => '7401',
+            'offid' => '100',
+            'affiliate_id' => '4806',
+            'source_id' => 'facebook',
+            'subid' => '{click_id}',
+            'fbclid' => '{click_id}',
+        ],
+    ],
+
     'bluespark' => [
         'base_url' => 'https://buybluespark.com/products/blue-spark%E2%84%A2-hydrogen-water-bottle',
         'params' => [
