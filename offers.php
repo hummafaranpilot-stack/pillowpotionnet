@@ -175,7 +175,7 @@ return [
     ],
 
     'medibloomvip' => [
-        'base_url' => 'https://cvaispino.com/clickout/26190/360643/',
+        'base_url' => 'https://apritvun.com/clickout/26219/361066/',
         'params' => [
             'traffic_source' => 'facebook',
             'click_id' => '{click_id}',
