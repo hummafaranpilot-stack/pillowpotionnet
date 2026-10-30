@@ -20,40 +20,8 @@
   --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #15130f;
-    --surface: #1e1b15;
-    --surface-sunken: #262117;
-    --ink: #f1ebdc;
-    --ink-soft: #b3aa94;
-    --ink-faint: #6e675a;
-    --line: #322c21;
-    --accent: #7cb9a0;
-    --accent-soft: #26362f;
-    --accent-ink: #9fd3bb;
-    --warn: #e08a6e;
-    --warn-soft: #3a2721;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #15130f;
-  --surface: #1e1b15;
-  --surface-sunken: #262117;
-  --ink: #f1ebdc;
-  --ink-soft: #b3aa94;
-  --ink-faint: #6e675a;
-  --line: #322c21;
-  --accent: #7cb9a0;
-  --accent-soft: #26362f;
-  --accent-ink: #9fd3bb;
-  --warn: #e08a6e;
-  --warn-soft: #3a2721;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-  color-scheme: dark;
-}
+/* This app commits to one look (warm paper + forest green) regardless of the
+   viewer's system theme, so there is no dark-mode block here on purpose. */
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
