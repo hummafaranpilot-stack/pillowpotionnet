@@ -185,7 +185,7 @@ return [
     ],
 
     'balancebloomvip' => [
-        'base_url' => 'https://apritvun.com/clickout/26132/360644/',
+        'base_url' => 'https://apritvun.com/clickout/26132/361067/',
         'params' => [
             'traffic_source' => 'facebook',
             'click_id' => '{click_id}',
