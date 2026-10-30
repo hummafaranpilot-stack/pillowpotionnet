@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Charity Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <h1>Charity Tracker</h1>
+    <div class="sync-dot"><span class="dot" id="syncDot"></span><span id="syncLabel">Syncing…</span></div>
+  </div>
+
+  <div class="content">
+    <div class="balance-card">
+      <div class="eyebrow">Available to Charity</div>
+      <div class="amount" id="availableAmount">Rs 0</div>
+      <div class="split">
+        <span>Total 5%: <b id="totalCharity">Rs 0</b></span>
+        <span>Sent: <b id="totalSent">Rs 0</b></span>
+      </div>
+    </div>
+
+    <div class="lists">
+      <div class="section-label">Income Entries</div>
+      <div id="incomeList"></div>
+
+      <div class="section-label">Charity Payments Sent</div>
+      <div id="paymentList"></div>
+    </div>
+  </div>
+
+  <div class="fab-stack">
+    <button class="fab fab-income" id="fabIncome"><span class="fab-icon">$</span>Add Income</button>
+    <button class="fab fab-send" id="fabSend"><span class="fab-icon">&#10084;</span>Send Charity</button>
+  </div>
+</div>
+
+<!-- Add Income Modal -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal-sheet">
+    <div class="grabber"></div>
+    <form id="incomeForm">
+      <div class="sheet-header">
+        <button type="button" class="sheet-btn cancel" id="incomeCancel">Cancel</button>
+        <h2>Add Income</h2>
+        <button type="submit" class="sheet-btn save" id="incomeSave" disabled>Save</button>
+      </div>
+
+      <div class="form-section-title">Source</div>
+      <div class="field-group">
+        <div class="field">
+          <label for="incomeSource">Source Name</label>
+          <input type="text" id="incomeSource" placeholder="Freelance, Salary..." required>
+        </div>
+        <div class="field">
+          <label for="incomeDate">Date</label>
+          <input type="date" id="incomeDate" required>
+        </div>
+      </div>
+
+      <div class="form-section-title">Balance</div>
+      <div class="currency-toggle" id="currencyToggle">
+        <button type="button" class="ct-btn active" data-currency="USD">USD</button>
+        <button type="button" class="ct-btn" data-currency="PKR">PKR</button>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <span class="prefix" id="incomeAmountPrefix">USD</span>
+          <input type="number" id="incomeAmount" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+      </div>
+
+      <div class="form-section-title">Charity Percentage</div>
+      <div class="field-group">
+        <div class="field">
+          <label for="incomePercent">Give away</label>
+          <input type="number" id="incomePercent" value="5" step="0.5" min="0.01" max="100" required>
+          <span class="prefix" style="margin-left:4px;">%</span>
+        </div>
+      </div>
+
+      <div class="rate-pill" id="ratePill"><span class="dot loading"></span> Fetching live exchange rate...</div>
+      <div class="result-card" id="incomeResult" hidden>
+        <div class="r-row"><span>Balance in USD</span><span id="previewBalanceUSD">$0.00</span></div>
+        <div class="r-row"><span>Balance in PKR</span><span id="previewBalancePKR">Rs 0</span></div>
+        <div class="r-row"><span>Charity (<span id="previewPercentLabel">5</span>%)</span><span id="previewCharityUSD">$0.00</span></div>
+        <div class="r-main"><span>Available to Charity</span><span id="previewCharityPKR">Rs 0</span></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Send Charity Modal -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-sheet">
+    <div class="grabber"></div>
+    <form id="paymentForm">
+      <div class="sheet-header">
+        <button type="button" class="sheet-btn cancel" id="paymentCancel">Cancel</button>
+        <h2>Send Charity</h2>
+        <button type="submit" class="sheet-btn save" id="paymentSave" disabled>Save</button>
+      </div>
+
+      <div class="avail-banner"><span class="t">Available to Charity</span><span class="v" id="paymentAvailable">Rs 0</span></div>
+
+      <div class="quick-percent" id="quickPercent">
+        <button type="button" data-pct="25">25%</button>
+        <button type="button" data-pct="50">50%</button>
+        <button type="button" data-pct="75">75%</button>
+        <button type="button" data-pct="100">100%</button>
+      </div>
+
+      <div class="form-section-title">Destination</div>
+      <div class="field-group">
+        <div class="field">
+          <label for="paymentDestination">Destination</label>
+          <input type="text" id="paymentDestination" placeholder="Edhi Foundation..." required>
+        </div>
+        <div class="field">
+          <label for="paymentDate">Date</label>
+          <input type="date" id="paymentDate" required>
+        </div>
+      </div>
+
+      <div class="form-section-title">Amount</div>
+      <div class="field-group">
+        <div class="field">
+          <span class="prefix">PKR</span>
+          <input type="number" id="paymentAmount" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+      </div>
+      <div class="warn-text" id="paymentWarn">Amount exceeds available charity balance</div>
+      <div class="hint">Yeh amount available balance se deduct ho jayega jab aap Save karenge.</div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
