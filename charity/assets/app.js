@@ -52,7 +52,9 @@ async function loadAll() {
 
 /* ---------- Render ---------- */
 function render() {
-  $('#availableAmount').textContent = fmtPKR(state.summary.availablePKR);
+  const available = state.summary.availablePKR;
+  $('#availableAmount').textContent = fmtPKR(available);
+  $('#availableAmount').classList.toggle('negative', available < 0);
   $('#totalCharity').textContent = fmtPKR(state.summary.totalCharityPKR);
   $('#totalSent').textContent = fmtPKR(state.summary.totalSentPKR);
 
@@ -200,6 +202,13 @@ $('#incomeAmount').addEventListener('input', updateIncomePreview);
 $('#incomePercent').addEventListener('input', updateIncomePreview);
 $('#incomeSource').addEventListener('input', updateIncomePreview);
 
+$('#incomeQuickPercent').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-pct]');
+  if (!btn) return;
+  $('#incomePercent').value = btn.dataset.pct;
+  updateIncomePreview();
+});
+
 $('#incomeForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const sourceName = $('#incomeSource').value.trim();
@@ -232,9 +241,11 @@ $('#incomeForm').addEventListener('submit', async (e) => {
 function updatePaymentValidity() {
   const amount = parseFloat($('#paymentAmount').value) || 0;
   const name = $('#paymentDestination').value.trim();
+  // Going negative is allowed on purpose (paying out of pocket ahead of the
+  // balance), so this is just a heads-up — it never blocks Save.
   const exceeds = amount > state.summary.availablePKR + 0.01;
   $('#paymentWarn').classList.toggle('show', exceeds && amount > 0);
-  $('#paymentSave').disabled = !(amount > 0 && name !== '' && !exceeds);
+  $('#paymentSave').disabled = !(amount > 0 && name !== '');
 }
 $('#paymentAmount').addEventListener('input', updatePaymentValidity);
 $('#paymentDestination').addEventListener('input', updatePaymentValidity);

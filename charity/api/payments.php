@@ -13,12 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $db = getDb();
 $method = $_SERVER['REQUEST_METHOD'];
 
-function getAvailablePKR(mysqli $db): float {
-    $totalCharity = $db->query('SELECT COALESCE(SUM(charity_pkr),0) AS t FROM income_entries')->fetch_assoc()['t'];
-    $totalSent = $db->query('SELECT COALESCE(SUM(amount_pkr),0) AS t FROM charity_payments')->fetch_assoc()['t'];
-    return (float)$totalCharity - (float)$totalSent;
-}
-
 if ($method === 'GET') {
     $result = $db->query('SELECT * FROM charity_payments ORDER BY payment_date DESC, id DESC');
     $rows = [];
@@ -44,11 +38,9 @@ if ($method === 'POST') {
         jsonError('Missing or invalid fields', 422);
     }
 
-    $available = getAvailablePKR($db);
-    if ($amountPKR > $available + 0.01) {
-        jsonError('Amount exceeds available charity balance (Rs ' . number_format($available, 2) . ')', 422);
-    }
-
+    // Allowed to go negative on purpose — you can pay a destination out of
+    // pocket ahead of the charity balance catching up; the next income entry
+    // brings it back toward zero automatically.
     $stmt = $db->prepare(
         'INSERT INTO charity_payments (destination_name, payment_date, amount_pkr) VALUES (?, ?, ?)'
     );
