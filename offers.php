@@ -206,4 +206,17 @@ return [
             's2' => '{click_id}',
         ],
     ],
+
+    // Kinzeno Adeel
+    'ka' => [
+        'base_url' => 'https://click-ecom.com/',
+        'params' => [
+            'a' => '303202',
+            'c' => '436908',
+            'co' => '369322',
+            'mt' => '16',
+            'fbclid' => '{click_id}',
+            's2' => '{click_id}',
+        ],
+    ],
 ];
